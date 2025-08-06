@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+import os
+
 
 app = Flask(__name__)
 
@@ -18,4 +20,5 @@ def get_params():
     return jsonify(stored_data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
