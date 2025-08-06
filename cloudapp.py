@@ -1,10 +1,59 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
 import os
 
 app = Flask(__name__)
 
-# Store data in memory
 stored_data = {}
+
+# HTML page with form
+HTML_PAGE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Data App</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Set Parameters</h2>
+        <form method="get" action="/set">
+            <input type="text" name="a" placeholder="Enter value A" required>
+            <input type="text" name="b" placeholder="Enter value B" required>
+            <button type="submit">Save</button>
+        </form>
+
+        <h3>Current Data</h3>
+        <form method="get" action="/get">
+            <button type="submit">View Stored Data</button>
+        </form>
+    </div>
+</body>
+</html>
+"""
+
+@app.route('/')
+def home():
+    return render_template_string(HTML_PAGE)
 
 @app.route('/set')
 def set_params():
@@ -21,4 +70,3 @@ def get_params():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-
