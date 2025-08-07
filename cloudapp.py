@@ -2,10 +2,9 @@ from flask import Flask, request, jsonify, render_template_string
 import os
 
 app = Flask(__name__)
-
 stored_data = {}
 
-# HTML page with form
+# HTML template
 HTML_PAGE = """
 <!DOCTYPE html>
 <html>
@@ -36,7 +35,7 @@ HTML_PAGE = """
 <body>
     <div class="box">
         <h2>Set Parameters</h2>
-        <form method="get" action="/set">
+        <form method="post" action="/set">
             <input type="text" name="a" placeholder="Enter value A" required>
             <input type="text" name="b" placeholder="Enter value B" required>
             <button type="submit">Save</button>
@@ -55,18 +54,18 @@ HTML_PAGE = """
 def home():
     return render_template_string(HTML_PAGE)
 
-@app.route('/set')
+@app.route('/set', methods=['POST'])  # ✅ changed to POST
 def set_params():
-    a = request.args.get('a')
-    b = request.args.get('b')
+    a = request.form.get('a')  # ✅ read from form
+    b = request.form.get('b')
     stored_data['a'] = a
     stored_data['b'] = b
     return jsonify({"message": "Params saved!", "a": a, "b": b})
 
-@app.route('/get')
+@app.route('/get', methods=['GET'])
 def get_params():
     return jsonify(stored_data)
 
 if __name__ == '__main__':
-   port = int(os.environ.get("PORT"))
-   app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT"))
+    app.run(host="0.0.0.0", port=port)
